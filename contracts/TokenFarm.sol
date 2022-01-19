@@ -151,7 +151,6 @@ contract TokenFarm is Ownable {
     function setPriceFeedContract(address _token, address _priceFeed) public onlyOwner{
         require(_token != address(0),"Token must be a valid address");
         require(_priceFeed != address(0),"Price feed must be a valid address");
-        require(tokenIsAllowed(_token),"Token is not allowed");
         tokenPriceFeedMapping[_token] = _priceFeed;
-    }
+    }   
 }

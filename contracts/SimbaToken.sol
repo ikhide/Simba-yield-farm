@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract Simba is ERC20 {
+contract SimbaToken is ERC20 {
     address public admin;
     constructor(uint256 initialSupply) ERC20("SimbaToken", "ST") {
         _mint(msg.sender, initialSupply);
