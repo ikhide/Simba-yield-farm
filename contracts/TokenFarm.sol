@@ -33,7 +33,7 @@ contract TokenFarm is Ownable {
         //use transferFrom Function because we do not own the tokens. We also need the token abi from IERC20 interface
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
         //add to stakers
-        updateUniqueTokensStaked(msg.sender, _token);
+        addUniqueTokensStaked(msg.sender, _token);
         //add to stakingBalance
         stakingBalance[_token][msg.sender] += _amount;
 
@@ -61,7 +61,7 @@ contract TokenFarm is Ownable {
         }
     }
 
-    function untakeTokens(address _token) public  {
+    function unstakeTokens(address _token) public  {
         //check if token is allowed
         require(tokenIsAllowed(_token),"Token is not allowed");
         //get amount staked
@@ -69,7 +69,7 @@ contract TokenFarm is Ownable {
         //check if token is staked
         require(amountStaked > 0,"Token is not staked");
         //unstake tokens
-        IERC20(_token).transferFrom(msg.sender, address(this), amountStaked);
+        IERC20(_token).transfer(msg.sender, amountStaked);
         //remove from stakingBalance
         stakingBalance[_token][msg.sender] = 0;
         //remove from uniqueTokensStaked
@@ -81,7 +81,7 @@ contract TokenFarm is Ownable {
 
     // HELPER FUNCTION
 
-    function updateUniqueTokensStaked(address _user, address _token) internal{
+    function addUniqueTokensStaked(address _user, address _token) internal{
         if(stakingBalance[_token][_user] <= 0){
             uniqueTokensStaked[_user] = uniqueTokensStaked[_user] + 1;
         }

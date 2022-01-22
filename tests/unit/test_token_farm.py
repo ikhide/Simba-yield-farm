@@ -29,10 +29,7 @@ def test_stake_tokens(amount_staked):
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("only for local testing")
     account = get_account()
-    non_owner = get_account(index=1)
     token_farm, simba_token = deploy_token_and_farm_token()
-    
-
     # Act
     # stake simba tokens 
     simba_token.approve(token_farm.address,amount_staked, {"from":account})
@@ -59,7 +56,27 @@ def test_issue_tokens(amount_staked):
 
 
 
+def test_unstake_token(amount_staked):
+    if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
+        pytest.skip("only for local testing")
+    account = get_account()
+    token_farm, simba_token = test_stake_tokens(amount_staked)
+    startingBalance = simba_token.balanceOf(account)
 
+    # unstake amount_staked
+    tx = token_farm.unstakeTokens(simba_token.address,{"from":account})
+    tx.wait(1)
+
+    # check balance of token for user is zero
+    assert token_farm.stakingBalance(simba_token, account) == 0
+    # If its the only, check user is removed form stakers,uniqueTokensStaked=0
+    assert token_farm.uniqueTokensStaked(account) == 0
+    # assert amount of tokens in user account is contains unstaked amount
+    assert simba_token.balanceOf(account.address) == startingBalance + amount_staked
+    # Assert no account in stakers array
+    with pytest.raises(Exception):
+        assert token_farm.stakers(0) == account
+        
 
 
 
