@@ -18,8 +18,7 @@ def deploy_token_and_farm_token(front_end_update=True):
         {'from': account},
         publish_source=config['networks'][network.show_active()].get('verify', False)
     )
-    print(simba_token.address)
-    print(simba_token.totalSupply())
+    
     # send all simba tokens tokens to token farm and leave just a few.
     tx = simba_token.transfer(token_farm.address, simba_token.totalSupply() - KEPT_BALANCE, {'from': account})
     tx.wait(1)
