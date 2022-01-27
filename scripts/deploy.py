@@ -9,7 +9,7 @@ import shutil
 KEPT_BALANCE =  Web3.toWei(100, "ether")
 TOTAL_SUPPLY =  Web3.toWei(1000000, "ether")
 
-def deploy_token_and_farm_token(front_end_update=True):
+def deploy_token_and_farm_token(front_end_update=False):
     account  = get_account() 
     # deploy tokens
     simba_token = SimbaToken.deploy(TOTAL_SUPPLY,{'from': account})
@@ -41,7 +41,6 @@ def deploy_token_and_farm_token(front_end_update=True):
 
 def add_allowed_tokens(token_farm, dict_of_allowed_tokens,account):
     for token in dict_of_allowed_tokens:
-        print(token)
         add_tx = token_farm.addAllowedToken(token.address, {'from':account})
         add_tx.wait(1)
         set_tx = token_farm.setPriceFeedContract(token.address, dict_of_allowed_tokens[token], {'from':account})
