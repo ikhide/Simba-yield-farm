@@ -77,6 +77,10 @@ contract TokenFarm is Ownable {
         //remove from stakers
         removeStaker(msg.sender);
     }
+
+    function fetchAllowedTokens() public view returns (address[] memory){
+        return (allowedTokens);
+    }
     
 
     // HELPER FUNCTION
@@ -108,12 +112,11 @@ contract TokenFarm is Ownable {
 
     function tokenIsAllowed(address _token) public returns(bool){
         for (uint256 tokenIndex=0; tokenIndex<allowedTokens.length; tokenIndex++){
-            if(allowedTokens[tokenIndex]==_token){
+            if(allowedTokens[tokenIndex] == _token){
                 return true;
-            } else {
-                return false;
             }
         }
+        return false;
     }
 
     function getUserTotalValue(address _user) public view returns(uint256){
