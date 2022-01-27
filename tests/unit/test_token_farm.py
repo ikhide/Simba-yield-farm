@@ -42,6 +42,22 @@ def test_stake_tokens(amount_staked):
     assert token_farm.stakers(0) == account
     return token_farm, simba_token
 
+def test_stake_fau_tokens(amount_staked):
+    if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
+        pytest.skip("only for local testing")
+    account = get_account()
+    token_farm, simba_token = test_stake_tokens(amount_staked)
+    # Act
+    # stake fau tokens 
+    fau_token = get_contract('fau_token')
+    fau_token.approve(token_farm.address,amount_staked, {"from":account})
+
+    tx = token_farm.stakeTokens(amount_staked,fau_token,{"from":account})
+    tx.wait(1)
+    # check that stakingBalance is equal to staked amount
+    assert token_farm.stakingBalance(fau_token, account) == amount_staked
+    assert token_farm.uniqueTokensStaked(account) == 2
+
 def test_issue_tokens(amount_staked):
     if network.show_active() not in LOCAL_BLOCKCHAIN_ENVIRONMENTS:
         pytest.skip("only for local testing")
@@ -53,7 +69,6 @@ def test_issue_tokens(amount_staked):
     token_farm.issueTokens({"from":account})
     # check that stakingBalance is equal to staked amount + issued tokens
     assert simba_token.balanceOf(account.address) == startingBalance + INITIAL_PRICE_FEED_VALUE
-
 
 
 def test_unstake_token(amount_staked):
